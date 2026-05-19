@@ -20,7 +20,7 @@ spec:
       values: |
         settings:
           clusterName: gitops-demo-dev
-          clusterEndpoint: gitops-demo-dev
+          clusterEndpoint: https://B4419B2BF5D4DA5D0D1D0526EC5DD3BA.gr7.ca-central-1.eks.amazonaws.com
           interruptionQueue: gitops-demo-dev
         # serviceAccount:
         #   annotations:
