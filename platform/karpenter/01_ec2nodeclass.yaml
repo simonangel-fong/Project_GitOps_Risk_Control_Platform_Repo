@@ -1,19 +1,19 @@
-# apiVersion: karpenter.k8s.aws/v1
-# kind: EC2NodeClass
-# metadata:
-#   name: general-node-class
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "0"
-# spec:
-#   role: "gitops-demo-dev"
-#   amiSelectorTerms:
-#     - alias: bottlerocket@latest
-#   subnetSelectorTerms:
-#     - tags:
-#         karpenter.sh/discovery: "gitops-demo-dev"
-#   securityGroupSelectorTerms:
-#     - tags:
-#         karpenter.sh/discovery: "gitops-demo-dev"
-#   tags:
-#     Name: karpenter/gitops-demo-dev/general
-#     managed-by: karpenter
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: general-node-class
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  role: "gitops-demo-dev"
+  amiSelectorTerms:
+    - alias: bottlerocket@latest
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "gitops-demo-dev"
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "gitops-demo-dev"
+  tags:
+    Name: karpenter/gitops-demo-dev/general
+    managed-by: karpenter
