@@ -54,11 +54,11 @@ spec:
             service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
             service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
             service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/"
+            service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
             # service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "<REPLACE_WITH_TAGS_CSV>"
             # NLB TLS termination using the ACM cert (only :443 does TLS; :80 stays plain).
             # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "<REPLACE_WITH_ACM_CERT_ARN>"
             # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-            # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
             # external-dns.alpha.kubernetes.io/hostname: "<REPLACE_WITH_DNS_NAME>"
             # external-dns.alpha.kubernetes.io/ttl: "120"
 
