@@ -1,0 +1,7 @@
+# platform/namespaces/external-dns.yaml
+# Pre-created so wave 6 (ExternalSecret) can write the cloudflare-api-key
+# Secret into it before the external-dns Helm chart at wave 40 runs.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns

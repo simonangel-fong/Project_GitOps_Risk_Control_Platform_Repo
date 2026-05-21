@@ -6,7 +6,8 @@ Numbering convention: gaps of 10 between critical waves so new components can be
 
 | Wave | Component                                         | Repo     | Purpose                                                      | Depends on                                              |
 | ---- | ------------------------------------------------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------- |
-| 5    | External Secrets Operator (Helm)                  | platform | Materialises Kubernetes Secrets from AWS SSM Parameter Store | IRSA role (infra)                                       |
+| 1    | Namespaces (`platform/namespaces/`)               | platform | Pre-creates workload namespaces so wave-6 ExternalSecrets can write into them before the consuming chart installs | None                                                    |
+| 5    | External Secrets Operator (Helm)                  | platform | Materialises Kubernetes Secrets from AWS SSM Parameter Store | IRSA role (infra), namespaces (wave 1)                  |
 | 6    | ESO config — ClusterSecretStore + ExternalSecrets | platform | Defines the SSM connection and which parameters to sync      | ESO CRDs (wave 5)                                       |
 | 10   | Karpenter controller (Helm)                       | platform | Node autoscaling                                             | IRSA role + SQS interruption queue (infra)              |
 | 11   | Karpenter config — EC2NodeClass + NodePool        | platform | Tells Karpenter what nodes to provision                      | Karpenter CRDs (wave 10)                                |
