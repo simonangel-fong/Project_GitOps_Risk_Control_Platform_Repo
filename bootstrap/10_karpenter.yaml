@@ -35,8 +35,8 @@ spec:
           values: |
             settings:
               clusterName: gitops-demo-dev
-              clusterEndpoint: "{{ index .metadata.annotations "eks.clusterEndpoint" }}"
-              interruptionQueue: Karpenter-gitops-demo-dev
+              clusterEndpoint: {{ index .metadata.annotations "eks.clusterEndpoint" }}
+              interruptionQueue: "{{ indes .metadata.annotations "eks.interruptionQueue"}}
 
             controller:
               resources:
