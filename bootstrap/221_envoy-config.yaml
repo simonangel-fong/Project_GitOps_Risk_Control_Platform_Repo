@@ -15,12 +15,12 @@ spec:
     - clusters: {} # Automatically use all clusters defined within Argo CD
   template:
     metadata:
-      name: platform-211-envoy-config
+      name: platform-221-envoy-config
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
-        argocd.argoproj.io/sync-wave: "211"
+        argocd.argoproj.io/sync-wave: "221"
     spec:
       project: default
       source:

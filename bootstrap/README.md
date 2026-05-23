@@ -39,4 +39,8 @@ curl -v -H "Host: gitops-dev.arguswatcher.net" http://gitops-demo-dev-420f0504fd
 
 
 
+
+kubectl delete application <root-app-name> -n argocd
+
+
 ```
