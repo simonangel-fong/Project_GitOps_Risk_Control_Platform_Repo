@@ -45,3 +45,13 @@ kubectl delete application <root-app-name> -n argocd
 
 
 ```
+
+
+ESO (-6)
+  └──► Karpenter (-5)
+         └──► ALBC (-4)
+                ├──► Envoy Gateway (-3)
+                │      ├──► External DNS (-2)
+                │      └──► Argo Rollouts (-1)
+                │                 └──► App (0)
+                └──► External DNS (-2)

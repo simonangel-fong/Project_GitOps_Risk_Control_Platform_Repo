@@ -15,12 +15,12 @@ spec:
   - clusters: {}
   template:
     metadata:
-      name: platform-210-external-dns
+      name: platform-220-external-dns
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
-        argocd.argoproj.io/sync-wave: "210"
+        argocd.argoproj.io/sync-wave: "220"
     spec:
       project: default
       source:
