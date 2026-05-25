@@ -61,4 +61,5 @@ ESO (-6)
 kubectl patch EnvoyProxy eg-nlb -p '{"metadata":{"finalizers":[]}}' --type=merge -n envoy-gateway-system
 kubectl patch GatewayClass eg -p '{"metadata":{"finalizers":[]}}' --type=merge -n envoy-gateway-system
 kubectl patch EC2NodeClass general-node-class -p '{"metadata":{"finalizers":[]}}' --type=merge -n envoy-gateway-system
+kubectl patch namespace external-dns -p '{"metadata":{"finalizers":[]}}' --type=merge
 ```
