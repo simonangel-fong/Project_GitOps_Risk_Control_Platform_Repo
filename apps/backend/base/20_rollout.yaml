@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: gitops-demo-backend
+  name: gitops-backend
 spec:
   # replicas is intentionally omitted — the HPA owns it.
   selector:
     matchLabels:
-      app.kubernetes.io/name: gitops-demo-backend
+      app.kubernetes.io/name: gitops-backend
   strategy:
     canary:
       steps:
@@ -18,12 +18,12 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: gitops-demo-backend
+        app.kubernetes.io/name: gitops-backend
     spec:
-      serviceAccountName: gitops-demo-backend
+      serviceAccountName: gitops-backend
       containers:
-        - name: gitops-demo-backend
-          image: gitops-demo-backend
+        - name: gitops-backend
+          image: gitops-backend
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

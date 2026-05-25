@@ -16,7 +16,7 @@ spec:
               kubernetes.io/metadata.name: backend
           podSelector:
             matchLabels:
-              app.kubernetes.io/name: gitops-demo-backend
+              app.kubernetes.io/name: gitops-backend
       ports:
         - protocol: TCP
           port: 8080

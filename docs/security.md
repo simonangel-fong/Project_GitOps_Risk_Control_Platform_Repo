@@ -37,10 +37,10 @@ Renders manifests, then validates against the Kubernetes schema. CRD schemas are
 
 ```bash
 kustomize build apps/backend/overlays/dev | kubeconform -verbose -strict -ignore-missing-schemas -summary -
-# stdin - gitops-demo-backend Rollout skipped
-# stdin - ServiceAccount gitops-demo-backend is valid
-# stdin - Service gitops-demo-backend is valid
-# stdin - HorizontalPodAutoscaler gitops-demo-backend is valid
+# stdin - gitops-backend Rollout skipped
+# stdin - ServiceAccount gitops-backend is valid
+# stdin - Service gitops-backend is valid
+# stdin - HorizontalPodAutoscaler gitops-backend is valid
 # stdin - NetworkPolicy allow-dns-egress is valid
 # stdin - NetworkPolicy default-deny is valid
 # stdin - NetworkPolicy allow-ingress-from-frontend is valid

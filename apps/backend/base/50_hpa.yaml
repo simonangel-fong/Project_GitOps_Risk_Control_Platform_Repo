@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: gitops-demo-backend
+  name: gitops-backend
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
-    name: gitops-demo-backend
+    name: gitops-backend
   # Thresholds below are base defaults — each overlay patches them.
   minReplicas: 1
   maxReplicas: 2

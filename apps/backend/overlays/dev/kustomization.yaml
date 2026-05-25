@@ -4,18 +4,18 @@ namespace: backend
 resources:
   - ../../base
 images:
-  - name: gitops-demo-backend
-    newName: docker.io/simonangelfong/gitops-demo-backend
+  - name: gitops-backend
+    newName: docker.io/simonangelfong/gitops-backend
     newTag: v0.3.0
 labels:
   - includeSelectors: false
     pairs:
-      app.kubernetes.io/instance: gitops-demo-backend-dev
+      app.kubernetes.io/instance: gitops-backend-dev
       env: dev
 patches:
   - target:
       kind: HorizontalPodAutoscaler
-      name: gitops-demo-backend
+      name: gitops-backend
     patch: |-
       - op: replace
         path: /spec/minReplicas

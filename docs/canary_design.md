@@ -106,7 +106,7 @@ spec:
             sum(increase(
               kube_pod_container_status_restarts_total{
                 namespace="backend",
-                pod=~"gitops-demo-backend-.*"
+                pod=~"gitops-backend-.*"
               }[2m]
             ))
 ```
@@ -135,8 +135,8 @@ Demo overlays patch these on via Kustomize JSON patches, matching the existing H
 
 | Path                | Command                                                      | When to use                                                                                                                                                               |
 | ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| In-flight abort     | `kubectl argo rollouts abort gitops-demo-backend -n backend` | Rollout is paused or progressing and you want to stop it now. Returns traffic to stable, leaves new ReplicaSet at 0.                                                      |
-| Post-promotion undo | `kubectl argo rollouts undo gitops-demo-backend -n backend`  | Rollout has completed and you need to back out. **Drifts from Git** — ArgoCD will sync the bad version back unless self-heal is off. Emergency-only.                      |
+| In-flight abort     | `kubectl argo rollouts abort gitops-backend -n backend` | Rollout is paused or progressing and you want to stop it now. Returns traffic to stable, leaves new ReplicaSet at 0.                                                      |
+| Post-promotion undo | `kubectl argo rollouts undo gitops-backend -n backend`  | Rollout has completed and you need to back out. **Drifts from Git** — ArgoCD will sync the bad version back unless self-heal is off. Emergency-only.                      |
 | GitOps-canonical    | `git revert <image-bump-commit>` then push                   | Rollout has completed and the bug is confirmed. Restores desired state in Git, ArgoCD syncs the previous image. Auditable, reversible. **This is the production answer.** |
 
 Scenario 3a's recovery uses path 3 (git revert). Path 2 is shown as the imperative escape hatch but called out as drift-inducing.

@@ -13,6 +13,6 @@ resources:
 labels:
   - includeSelectors: false
     pairs:
-      app.kubernetes.io/name: gitops-demo-backend
+      app.kubernetes.io/name: gitops-backend
       app.kubernetes.io/component: backend
       app.kubernetes.io/part-of: gitops-demo

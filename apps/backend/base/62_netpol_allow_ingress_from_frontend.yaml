@@ -6,7 +6,7 @@ spec:
   # ingress only for frontend
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: gitops-demo-backend
+      app.kubernetes.io/name: gitops-backend
   policyTypes:
     - Ingress
   ingress:
