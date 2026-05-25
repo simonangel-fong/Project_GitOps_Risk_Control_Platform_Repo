@@ -3,9 +3,13 @@ framework:
   - helm
   - kustomize
 
+# Paths Checkov never scans.
+# apps/ is excluded because it's scanned separately as rendered output.
 skip-path:
+  - apps/
   - docs/
   - .github/
+  - .rendered/
 
 # Per-finding skips. Add the check ID and a one-line reason.
 # Example:
