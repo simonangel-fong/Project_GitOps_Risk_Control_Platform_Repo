@@ -1,0 +1,5 @@
+# platform/namespaces/argo-rollouts.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argo-rollouts

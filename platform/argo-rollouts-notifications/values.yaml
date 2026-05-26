@@ -1,0 +1,3 @@
+slack:
+  secretName: argo-rollouts-notification-secret
+  secretKey: slack-token
