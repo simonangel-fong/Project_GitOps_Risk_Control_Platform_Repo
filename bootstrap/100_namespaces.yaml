@@ -25,7 +25,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "100"
     spec:
-      project: '{{ index .metadata.annotations "project" }}'
+      project: default
       source:
         repoURL: https://github.com/simonangel-fong/Project_GitOps_Platform_Repo.git
         targetRevision: '{{ index .metadata.annotations "env" }}'
