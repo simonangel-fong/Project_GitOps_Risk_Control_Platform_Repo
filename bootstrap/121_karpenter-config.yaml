@@ -19,6 +19,8 @@ spec:
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io
+      labels:
+        type: platform
       annotations:
         argocd.argoproj.io/sync-wave: "121"
     spec:
