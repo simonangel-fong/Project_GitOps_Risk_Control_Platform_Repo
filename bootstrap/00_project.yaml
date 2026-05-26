@@ -12,6 +12,7 @@ spec:
     - https://charts.external-secrets.io
     - public.ecr.aws/karpenter
     - https://aws.github.io/eks-charts
+    - docker.io/envoyproxy
   destinations:
     - server: https://kubernetes.default.svc
       namespace: "*"
