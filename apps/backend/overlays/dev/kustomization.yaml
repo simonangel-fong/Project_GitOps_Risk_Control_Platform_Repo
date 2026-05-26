@@ -40,7 +40,7 @@ patches:
       # Scenario 1: happy path
       - op: replace
         path: /spec/template/spec/containers/0/env/2/value
-        value: "true"
+        value: "false"
       ###########################
       ###########################
       # Scenario 2 (RDS connection failure): PGDB_ENABLE=true + unreachable PGDB_URL.
