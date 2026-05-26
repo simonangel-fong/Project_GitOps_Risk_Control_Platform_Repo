@@ -15,7 +15,7 @@ spec:
       serviceAccountName: gitops-frontend
       containers:
         - name: gitops-frontend
-          image: gitops-demo-frontend
+          image: gitops-frontend
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
