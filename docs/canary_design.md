@@ -112,8 +112,14 @@ spec:
 ```
 
 - Single metric: container restart count in the last 2 minutes.
-- An OOMKill produces a restart. One restart in the canary window = analysis fails.
+- An OOMKill produces a restart. With `failureLimit: 1`, the analysis tolerates **up to 1 failed measurement** across the 3-sample window before aborting — i.e. 2 of 3 measurements must report a restart for the analysis itself to fail. (Argo Rollouts semantics: `failureLimit` is the count of allowed failures, not the threshold that triggers abort.)
 - Memory-utilization query was considered but rejected: noisier, requires tuning a threshold, and the restart signal is unambiguous.
+
+#### Observed during dev rehearsal
+
+First analysis-step result: `✔ 2, ✖ 1` — passed (one failure tolerated, advanced to 50%). Second analysis-step result: `✖ 2` on the first two of three measurements — aborted as soon as the second failure tipped past `failureLimit`. Both windows were inside tolerance individually for the first run, but a sustained OOM loop produces consistent failures across measurement windows, so the second analysis catches what the first nearly missed. The two-analysis structure (one per pause) is what makes this robust, not the per-analysis tuning.
+
+Trade-off note: `failureLimit: 0` would catch on the first failed measurement (single-shot abort, no tolerance) at the cost of false-positive risk from a single transient scrape blip. Current setting prioritizes robustness against scrape jitter over fastest-possible detection.
 
 ## Rehearsal in dev (before stage)
 
