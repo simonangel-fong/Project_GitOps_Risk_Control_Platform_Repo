@@ -253,11 +253,11 @@ This project creates `automated CI/CD pipelines` to **validate platform changes*
 - This project **separates** `dev`, `stage`, and `prod` to support fast validation, production-like testing, and controlled production release.
 - Each environment is protected by dedicated `git branch`, `cluster`, and `Kustomize configuration`, to ensure changes can move through the delivery flow **with lower risk**.
 
-| Env     | Branch  | Dedicated Cluster | Manifest                            | Purpose                                            | Feature                            |
-| ------- | ------- | ----------------- | ----------------------------------- | -------------------------------------------------- | ---------------------------------- |
-| `dev`   | `dev`   | `gitops-dev`      | `overlays/dev/kustomization.yaml`   | Safe space for development and early validation    | Flexible, fast-changing            |
-| `stage` | `stage` | `gitops-stage`    | `overlays/stage/kustomization.yaml` | Production-like environment for release validation | Test-heavy, production-like        |
-| `prod`  | `prod`  | `gitops-prod`     | `overlays/prod/kustomization.yaml`  | Live environment for end users                     | Stable, reliable, security-focused |
+| Env     | Branch  | Cluster        | Manifest Path     | Purpose                                            | Feature                            |
+| ------- | ------- | -------------- | ----------------- | -------------------------------------------------- | ---------------------------------- |
+| `dev`   | `dev`   | `gitops-dev`   | `overlays/dev/`   | Safe space for development and early validation    | Flexible, fast-changing            |
+| `stage` | `stage` | `gitops-stage` | `overlays/stage/` | Production-like environment for release validation | Test-heavy, production-like        |
+| `prod`  | `prod`  | `gitops-prod`  | `overlays/prod/`  | Live environment for end users                     | Stable, reliable, security-focused |
 
 ---
 
