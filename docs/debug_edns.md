@@ -1,8 +1,8 @@
-# GitOps Canary Promotion - Platform Repo Runbook: Debugging External DNS
+# Runbook - Debugging External DNS
 
 [Back](../README.md)
 
-- [GitOps Canary Promotion - Platform Repo Runbook: Debugging External DNS](#gitops-canary-promotion---platform-repo-runbook-debugging-external-dns)
+- [Runbook - Debugging External DNS](#runbook---debugging-external-dns)
   - [No `Cloudflare` DNS Records Update](#no-cloudflare-dns-records-update)
     - [Issue](#issue)
     - [Debugging](#debugging)

@@ -266,8 +266,8 @@ This project creates `automated CI/CD pipelines` to **validate platform changes*
 Runbooks for common platform issues and troubleshooting workflows:
 
 - [Debugging `External DNS`](docs/debug_edns.md): Common ExternalDNS sync issues and troubleshooting steps
-- [Debugging `AWS Load Balancer Controller`](docs/debug_lb.md): Common load balancer misconfigurations and fixes
-- [Debugging `ArgoCD Sync Waves`](docs/argocd_wave.md): Sync wave ordering and dependency control
+- [Debugging `AWS Load Balancer`](docs/debug_lb.md): Common load balancer misconfigurations and fixes
+- [Debugging `ArgoCD Sync Waves`](docs/debug_argocd_wave.md): Sync wave ordering and dependency control
 - [Debugging `Slack Notifications`](docs/debug_argo_notification.md): Slack notification setup and common issues for ArgoCD and Argo Rollouts
 
 ---
