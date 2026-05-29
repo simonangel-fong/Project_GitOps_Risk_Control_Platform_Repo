@@ -4,8 +4,8 @@ namespace: frontend
 resources:
   - ../../base
 images:
-  - name: gitops-frontend
-    newName: docker.io/simonangelfong/gitops-demo-frontend
+  - name: gitops-risk-control-frontend
+    newName: docker.io/simonangelfong/gitops-risk-control-frontend
     newTag: v0.3.1
 labels:
   - includeSelectors: false
