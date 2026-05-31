@@ -57,13 +57,13 @@ This project implements a **GitOps-based release risk control workflow** across 
 - The project separates **application**, **infrastructure**, and **platform** responsibilities into dedicated repositories.
 - This separation creates clear **ownership boundaries**, reduces **coordination risk**, and makes changes **easier to review and audit**.
 
+![multi-repo](./docs/assets/multi-repo.png)
+
 | Repository                                                                                      | Role                | Main Responsibility                                                                                                |
 | ----------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [Platform](https://github.com/simonangel-fong/Project_GitOps_Risk_Control_Platform_Repo.git)    | _Platform Engineer_ | Kubernetes add-ons, application manifests, sync waves, canary rollout configuration, monitoring, and notifications |
 | [Application](https://github.com/simonangel-fong/Project_GitOps_Risk_Control_App_Repo.git)      | _Software Engineer_ | Application source code, Docker image build, image push, and deployment update trigger                             |
 | [Infrastructure](https://github.com/simonangel-fong/Project_GitOps_Risk_Control_Infra_Repo.git) | _Cloud Engineer_    | AWS infrastructure, EKS clusters, Argo CD installation, and networking foundation                                  |
-
-![repo](./docs/assets/multi-repo.png)
 
 ---
 
@@ -94,7 +94,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 | `stage`     | Auto-promotion after successful dev validation            | Promote manifests to stage, run GitOps sync, execute load test, and send validation result                     |
 | `prod`      | _Release Owner_ reviews and approves production promotion | Promote manifests to prod, run GitOps sync, send release notification, and hand off to post-release monitoring |
 
-![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.png)
+![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.gif)
 
 - The pipeline keeps `dev` and `stage` highly automated for fast validation,
 - The `prod` requires **human release approval** to protect production stability.
