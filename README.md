@@ -10,9 +10,8 @@
 
 - [GitOps Risk Control](#gitops-risk-control)
   - [Challenge and Solution](#challenge-and-solution)
-  - [Project Architecture](#project-architecture)
   - [Pre-release Risk Control](#pre-release-risk-control)
-    - [Dedicated Repositories](#dedicated-repositories)
+    - [Multi-Repositories](#multi-repositories)
     - [Environment Strategy](#environment-strategy)
     - [Automated Promotion Pipeline](#automated-promotion-pipeline)
   - [Release Risk Control](#release-risk-control)
@@ -43,42 +42,9 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ---
 
-## Project Architecture
+- **Architecture Diagram**
 
-- 3-repo GitOps model to separate application delivery, infrastructure provisioning, and platform configuration.
-
-```txt
-                                         End Users
-                                            |
-                                            v
-          +---------------------------------------------------------------------+
-          |                            EKS Runtime                              |
-          |                                                                     |
-          |  Applications: Frontend App, Backend App                            |
-          |                                                                     |
-          |  Platform Add-ons: ESO, Karpenter, ALBC, Envoy, ExternalDNS         |
-          |  Delivery & Observability: Argo Rollouts, Prometheus,               |
-          |  Alertmanager, Slack Notifications                                  |
-          +---------------------------------------------------------------------+
-                                            ^
-                                            |
-                  +-------------------------+-------------------------+
-                  ^                         ^                         ^
-                  |                         |                         |
-             Provisioning            Container Image         GitOps Sync / Rollout
-                  |                         |                         |
-        +---------------------+  +---------------------+   +---------------------+
-        |Infrastructure Repo  |  | Application Repo    |   | Platform Repo       |
-        |                     |  |                     |   |                     |
-        | Terraform           |  |App source code      |   | GitOps manifests    |
-        | AWS / EKS clusters  |  | Docker build        |   | App-of-Apps         |
-        | ArgoCD install      |  |  CI pipeline        |   | Add-ons / apps      |
-        +---------------------+  +---------------------+   +---------------------+
-                  ^                         ^                         ^
-                  |                         |                         |
-             Cloud Engineer              Developer            Platform Engineer
-
-```
+![arch](./docs/assets/architecture.gif)
 
 ---
 
@@ -86,10 +52,12 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 `Pre-release risk control` focuses on reducing coordination issues, catching problems early, and preventing unvalidated changes from reaching production.
 
-### Dedicated Repositories
+### Multi-Repositories
 
+- Multi-repo practice creates clear **ownership boundaries**, reduces **coordination risk**, and makes changes **easier to review and audit**.
 - The project separates **application**, **infrastructure**, and **platform** responsibilities into dedicated repositories.
-- This separation creates clear **ownership boundaries**, reduces **coordination risk**, and makes changes **easier to review and audit**.
+
+![multi-repo](./docs/assets/multi-repo.png)
 
 | Repository                                                                                      | Role                | Main Responsibility                                                                                                |
 | ----------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -101,14 +69,17 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ### Environment Strategy
 
-- The project separates `dev`, `stage`, and `prod` environments using dedicated `Git branches`, `EKS clusters`, and `Kustomize overlays`.
-- This enables a controlled promotion path where changes can be validated progressively before reaching production.
+- `Isolated environments` **control blast radius** through a git branching strategy, separate clusters, manifests, and DNS endpoints.
+- The project separates `dev`, `stage`, and `prod` environments using dedicated `Git branches`, `EKS clusters`, and `Kustomize` overlay manifests.
 
-| Environment | Branch  | Cluster        | Manifest Path     | Purpose                                   | Characteristics                        |
-| ----------- | ------- | -------------- | ----------------- | ----------------------------------------- | -------------------------------------- |
-| `dev`       | `dev`   | `gitops-dev`   | `overlays/dev/`   | Early validation for development changes  | Fast-changing and flexible             |
-| `stage`     | `stage` | `gitops-stage` | `overlays/stage/` | Production-like validation before release | Test-heavy and production-like         |
-| `prod`      | `prod`  | `gitops-prod`  | `overlays/prod/`  | Live environment for end users            | Stable, reliable, and security-focused |
+| Environment     | `dev`                                    | `stage`                                   | `prod`                                 |
+| --------------- | ---------------------------------------- | ----------------------------------------- | -------------------------------------- |
+| Branch          | `dev`                                    | `stage`                                   | `prod`                                 |
+| Cluster         | `gitops-dev`                             | `gitops-stage`                            | `gitops-prod`                          |
+| Manifest Path   | `overlays/dev/`                          | `overlays/stage/`                         | `overlays/prod/`                       |
+| DNS Endpoint    | `https://gitops-dev.domain`              | `https://gitops-stage.domain`             | `https://gitops.domain`                |
+| Purpose         | Early validation for development changes | Production-like validation before release | Live environment for end users         |
+| Characteristics | Fast-changing and flexible               | Test-heavy and production-like            | Stable, reliable, and security-focused |
 
 ---
 
@@ -117,46 +88,28 @@ This project implements a **GitOps-based release risk control workflow** across 
 - The `CI/CD pipeline` connects the separated **repositories** and **environments** into one controlled delivery flow.
 - It validates changes, promotes manifests across environments, and keeps production promotion approval-based.
 
+![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.gif)
+
 | Environment | Owner & Trigger                                           | Pipeline Responsibility                                                                                        |
 | ----------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `dev`       | _Platform Engineer_ commits manifest changes              | Run manifest validation, security checks, GitOps sync, smoke test, and failure notification                    |
 | `stage`     | Auto-promotion after successful dev validation            | Promote manifests to stage, run GitOps sync, execute load test, and send validation result                     |
 | `prod`      | _Release Owner_ reviews and approves production promotion | Promote manifests to prod, run GitOps sync, send release notification, and hand off to post-release monitoring |
 
-![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.png)
-
-- The pipeline keeps `dev` and `stage` highly automated for fast validation,
-- The `prod` requires **human release approval** to protect production stability.
+- The pipeline keeps `dev` and `stage` highly automated for fast validation.
+- The `prod` environment requires **human release approval** to protect production stability.
 
 ---
 
 ## Release Risk Control
 
 - `Release risk control` focuses on limiting production impact when a new version reaches users.
-- Instead of replacing the stable version all at once, the project uses `canary deployment`, automated rollout analysis, and GitOps-based recovery to release changes gradually and safely.
-  - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout
-  - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic
-  - **Rollback/revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery
+- Instead of replacing the stable version all at once, the project uses `canary deployment`, automated rollout analysis, and GitOps-based recovery to release changes gradually and safely:
+  - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout.
+  - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic.
+  - **Rollback/Revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery.
 
-```text
-New Image / Manifest Update
-        ↓
-Argo CD Syncs Rollout Manifest
-        ↓
-Argo Rollouts Starts Canary Release
-        ↓
-Shift Limited Traffic to New Version
-        ↓
-Run AnalysisTemplate Checks
-        ↓
-+----------------------------+
-↓                            ↓
-Metrics Healthy              Metrics Failed
-↓                            ↓
-Promote New Version          Roll Back to Stable Version
-↓                            ↓
-Send Slack Notification      Send Slack Notification
-```
+![canary_deploy](./docs/assets/canary_deploy.gif)
 
 ---
 
@@ -207,12 +160,12 @@ Monitoring dashboards and incident alerts help identify abnormal behavior and su
 
 ## Summary
 
-| Phase        | Solution                      | Risk Reduced                   | Description                                       |
-| ------------ | ----------------------------- | ------------------------------ | ------------------------------------------------- |
-| Pre-release  | Separate repos                | Coordination risk across roles | Separates responsibilities with clearer ownership |
-| Pre-release  | Environment isolation         | Production-readiness risk      | Isolates `dev`,`stage`,`prod` environments        |
-| Pre-release  | CI/CD across repos & env      | Bug/security risk              | Catches issues before promotion                   |
-| Release      | Canary deployment             | Rollout risk                   | Limits blast radius of failed releases            |
-| Release      | Automated analysis / rollback | Manual response risk           | Stops unhealthy rollout faster                    |
-| Post-release | Prometheus/Grafana monitoring | Visibility risk                | Shows system health after deployment              |
-| Post-release | Alertmanager alerts           | Operation risk                 | Helps identify incidents sooner and reduce MTTR   |
+| Phase        | Risk                           | Mitigation                    | Description                                       |
+| ------------ | ------------------------------ | ----------------------------- | ------------------------------------------------- |
+| Pre-release  | Coordination risk across roles | Multi-repos                   | Separates responsibilities with clearer ownership |
+| Pre-release  | Production-readiness risk      | Environment isolation         | Isolates `dev`,`stage`,`prod` environments        |
+| Pre-release  | Bug/security risk              | CI/CD across repos & env      | Catches issues before promotion                   |
+| Release      | Rollout risk                   | Canary deployment             | Limits blast radius of failed releases            |
+| Release      | Manual response risk           | Automated analysis / rollback | Stops unhealthy rollout faster                    |
+| Post-release | Visibility risk                | Prometheus/Grafana monitoring | Shows system health after deployment              |
+| Post-release | Operation risk                 | Alertmanager alerts           | Helps identify incidents sooner and reduce MTTR   |
