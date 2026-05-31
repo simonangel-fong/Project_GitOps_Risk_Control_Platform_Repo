@@ -256,10 +256,6 @@ Day 1 is non-negotiable. If OOM doesn't reproduce reliably or Prometheus isn't r
 
 ---
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 case 3a
 
 ```sh

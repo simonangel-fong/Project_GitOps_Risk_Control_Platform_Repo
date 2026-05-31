@@ -117,7 +117,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 A new version passes rollout analysis, traffic is gradually promoted, and `Slack` receives the deployment result.
 
-![canary-happy-path](docs/assets/canary-happy-path.gif)
+![canary_happy_path](docs/assets/canary_happy_path.gif)
 
 ---
 
@@ -125,7 +125,7 @@ A new version passes rollout analysis, traffic is gradually promoted, and `Slack
 
 A bad release fails health or metric validation, `Argo Rollouts` rolls back to the stable version, and `Slack` receives the rollback notification.
 
-![canary-db-failure-rollback](docs/assets/canary-db-failure-rollback.gif)
+![canary_failure_rollback](docs/assets/canary_failure_rollback.gif)
 
 ---
 
