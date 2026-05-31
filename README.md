@@ -69,8 +69,8 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ### Environment Strategy
 
-- Isolated environments control blask radius by git branching strategy, separated clusters, manifests, and DNS endpoints.
-- The project separates `dev`, `stage`, and `prod` environments using dedicated `Git branches`, `EKS clusters`, and `Kustomize` overlays manifests.
+- `Isolated environments` **control blast radius** through a git branching strategy, separate clusters, manifests, and DNS endpoints.
+- The project separates `dev`, `stage`, and `prod` environments using dedicated `Git branches`, `EKS clusters`, and `Kustomize` overlay manifests.
 
 | Environment     | `dev`                                    | `stage`                                   | `prod`                                 |
 | --------------- | ---------------------------------------- | ----------------------------------------- | -------------------------------------- |
@@ -96,18 +96,18 @@ This project implements a **GitOps-based release risk control workflow** across 
 | `stage`     | Auto-promotion after successful dev validation            | Promote manifests to stage, run GitOps sync, execute load test, and send validation result                     |
 | `prod`      | _Release Owner_ reviews and approves production promotion | Promote manifests to prod, run GitOps sync, send release notification, and hand off to post-release monitoring |
 
-- The pipeline keeps `dev` and `stage` highly automated for fast validation,
-- The `prod` requires **human release approval** to protect production stability.
+- The pipeline keeps `dev` and `stage` highly automated for fast validation.
+- The `prod` environment requires **human release approval** to protect production stability.
 
 ---
 
 ## Release Risk Control
 
 - `Release risk control` focuses on limiting production impact when a new version reaches users.
-- Instead of replacing the stable version all at once, the project uses `canary deployment`, automated rollout analysis, and GitOps-based recovery to release changes gradually and safely.
-  - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout
-  - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic
-  - **Rollback/revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery
+- Instead of replacing the stable version all at once, the project uses `canary deployment`, automated rollout analysis, and GitOps-based recovery to release changes gradually and safely:
+  - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout.
+  - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic.
+  - **Rollback/Revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery.
 
 ![canary_deploy](./docs/assets/canary_deploy.gif)
 
