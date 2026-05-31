@@ -259,6 +259,9 @@ Day 1 is non-negotiable. If OOM doesn't reproduce reliably or Prometheus isn't r
 case 3a
 
 ```sh
+# get harsh
+git log --oneline -4
+
 # revert
 git revert 43d66eb --no-edit
 git push
