@@ -1,4 +1,29 @@
-# Canary Deployment Design — Dev → Stage
+# Canary Deployment Demo
+
+[Back](../README.md)
+
+- [Canary Deployment Demo](#canary-deployment-demo)
+  - [Purpose](#purpose)
+  - [The matrix](#the-matrix)
+  - [Thesis](#thesis)
+  - [Bug definitions](#bug-definitions)
+    - [Bug 1 — RDS connection failure](#bug-1--rds-connection-failure)
+    - [Bug 2 — Subtle OOM](#bug-2--subtle-oom)
+  - [Argo Rollouts configuration](#argo-rollouts-configuration)
+    - [Dev — fast canary](#dev--fast-canary)
+    - [Stage — long canary + analysis](#stage--long-canary--analysis)
+    - [AnalysisTemplate (stage only)](#analysistemplate-stage-only)
+      - [Observed during dev rehearsal](#observed-during-dev-rehearsal)
+  - [Rehearsal in dev (before stage)](#rehearsal-in-dev-before-stage)
+  - [Where the env vars live](#where-the-env-vars-live)
+  - [Rollback paths (three of them, deliberate)](#rollback-paths-three-of-them-deliberate)
+  - [What this design deliberately does not do](#what-this-design-deliberately-does-not-do)
+  - [Build plan (one week)](#build-plan-one-week)
+  - [Preconditions (day-1 checklist)](#preconditions-day-1-checklist)
+  - [Open design questions to resolve during build](#open-design-questions-to-resolve-during-build)
+  - [Reference](#reference)
+
+---
 
 ## Purpose
 
@@ -134,7 +159,7 @@ To rehearse, the dev overlay temporarily mirrors stage config: long pauses, anal
   value: "true" # OOM_ENABLE
 - op: replace
   path: /spec/template/spec/containers/0/env/5/value
-  value: "3"    # OOM_TIME, in minutes
+  value: "3" # OOM_TIME, in minutes
 
 # Strategy override — replace dev's short canary with stage's long canary + analysis.
 - op: replace
@@ -178,11 +203,11 @@ Demo overlays patch these on via Kustomize JSON patches, matching the existing H
 
 ## Rollback paths (three of them, deliberate)
 
-| Path                | Command                                                      | When to use                                                                                                                                                               |
-| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Path                | Command                                                 | When to use                                                                                                                                                               |
+| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | In-flight abort     | `kubectl argo rollouts abort gitops-backend -n backend` | Rollout is paused or progressing and you want to stop it now. Returns traffic to stable, leaves new ReplicaSet at 0.                                                      |
 | Post-promotion undo | `kubectl argo rollouts undo gitops-backend -n backend`  | Rollout has completed and you need to back out. **Drifts from Git** — ArgoCD will sync the bad version back unless self-heal is off. Emergency-only.                      |
-| GitOps-canonical    | `git revert <image-bump-commit>` then push                   | Rollout has completed and the bug is confirmed. Restores desired state in Git, ArgoCD syncs the previous image. Auditable, reversible. **This is the production answer.** |
+| GitOps-canonical    | `git revert <image-bump-commit>` then push              | Rollout has completed and the bug is confirmed. Restores desired state in Git, ArgoCD syncs the previous image. Auditable, reversible. **This is the production answer.** |
 
 Scenario 3a's recovery uses path 3 (git revert). Path 2 is shown as the imperative escape hatch but called out as drift-inducing.
 
@@ -196,15 +221,15 @@ Scenario 3a's recovery uses path 3 (git revert). Path 2 is shown as the imperati
 
 ## Build plan (one week)
 
-| Day | Task                                                                                                                                                                                                                                                                                 |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | Confirm preconditions: stage cluster registered with ArgoCD; Prometheus reachable from stage; Spring Boot OOM reproduces reliably with `OOM_ENABLE=true OOM_TIME=3` at 256Mi limit; stage overlay syncs today.                                                                   |
+| Day | Task                                                                                                                                                                                                                                                                                                       |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Confirm preconditions: stage cluster registered with ArgoCD; Prometheus reachable from stage; Spring Boot OOM reproduces reliably with `OOM_ENABLE=true OOM_TIME=3` at 256Mi limit; stage overlay syncs today.                                                                                             |
 | 2   | Confirm `PGDB_ENABLE`, `PGDB_URL`, `OOM_ENABLE`, `OOM_TIME` env vars exist in [apps/backend/base/20_rollout.yaml](apps/backend/base/20_rollout.yaml) with safe defaults. Patch dev and stage overlays to enable bug modes for the demo. Add `progressDeadlineSeconds` and `progressDeadlineAbort` per env. |
-| 3   | Write AnalysisTemplate. Wire into stage rollout steps. Verify Prometheus service DNS from inside the stage cluster.                                                                                                                                                                  |
-| 4   | Dry-run all three scenarios end-to-end on the live clusters. Tune timings if OOM doesn't land inside the canary window. Capture asciinema/screenshots of `kubectl argo rollouts get rollout -w` for each run.                                                                        |
-| 5   | Draft README. Build the architecture diagram (built vs designed, solid vs dashed).                                                                                                                                                                                                   |
-| 6   | Record + edit the 2-min video.                                                                                                                                                                                                                                                       |
-| 7   | Polish README. Write the "what this deliberately does not do" section. Final pass. Push.                                                                                                                                                                                             |
+| 3   | Write AnalysisTemplate. Wire into stage rollout steps. Verify Prometheus service DNS from inside the stage cluster.                                                                                                                                                                                        |
+| 4   | Dry-run all three scenarios end-to-end on the live clusters. Tune timings if OOM doesn't land inside the canary window. Capture asciinema/screenshots of `kubectl argo rollouts get rollout -w` for each run.                                                                                              |
+| 5   | Draft README. Build the architecture diagram (built vs designed, solid vs dashed).                                                                                                                                                                                                                         |
+| 6   | Record + edit the 2-min video.                                                                                                                                                                                                                                                                             |
+| 7   | Polish README. Write the "what this deliberately does not do" section. Final pass. Push.                                                                                                                                                                                                                   |
 
 Day 1 is non-negotiable. If OOM doesn't reproduce reliably or Prometheus isn't reachable from stage, the rest of the plan is built on sand.
 
@@ -230,7 +255,6 @@ Day 1 is non-negotiable. If OOM doesn't reproduce reliably or Prometheus isn't r
 - `progressDeadlineSeconds` semantics: https://argoproj.github.io/argo-rollouts/features/rollout-spec/#progressdeadlineseconds
 
 ---
-
 
 case 3a
 

@@ -54,8 +54,8 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ### Multi-Repositories
 
+- Multi-repo practice creates clear **ownership boundaries**, reduces **coordination risk**, and makes changes **easier to review and audit**.
 - The project separates **application**, **infrastructure**, and **platform** responsibilities into dedicated repositories.
-- This separation creates clear **ownership boundaries**, reduces **coordination risk**, and makes changes **easier to review and audit**.
 
 ![multi-repo](./docs/assets/multi-repo.png)
 
@@ -69,7 +69,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ### Environment Strategy
 
-- Control blask radius by isolated environments by branching strategy, separated cluster, manifest, and DNS endpoint.
+- Isolated environments control blask radius by git branching strategy, separated clusters, manifests, and DNS endpoints.
 - The project separates `dev`, `stage`, and `prod` environments using dedicated `Git branches`, `EKS clusters`, and `Kustomize` overlays manifests.
 
 | Environment     | `dev`                                    | `stage`                                   | `prod`                                 |
@@ -88,18 +88,16 @@ This project implements a **GitOps-based release risk control workflow** across 
 - The `CI/CD pipeline` connects the separated **repositories** and **environments** into one controlled delivery flow.
 - It validates changes, promotes manifests across environments, and keeps production promotion approval-based.
 
+![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.gif)
+
 | Environment | Owner & Trigger                                           | Pipeline Responsibility                                                                                        |
 | ----------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `dev`       | _Platform Engineer_ commits manifest changes              | Run manifest validation, security checks, GitOps sync, smoke test, and failure notification                    |
 | `stage`     | Auto-promotion after successful dev validation            | Promote manifests to stage, run GitOps sync, execute load test, and send validation result                     |
 | `prod`      | _Release Owner_ reviews and approves production promotion | Promote manifests to prod, run GitOps sync, send release notification, and hand off to post-release monitoring |
 
-![cicd-pipeline-diagram](./docs/assets/cicd_pipeline_diagram.gif)
-
 - The pipeline keeps `dev` and `stage` highly automated for fast validation,
 - The `prod` requires **human release approval** to protect production stability.
-
-- Main CI/CD Pipeline
 
 ---
 
@@ -110,26 +108,6 @@ This project implements a **GitOps-based release risk control workflow** across 
   - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout
   - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic
   - **Rollback/revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery
-
-```text
-New Image / Manifest Update
-        ↓
-Argo CD Syncs Rollout Manifest
-        ↓
-Argo Rollouts Starts Canary Release
-        ↓
-Shift Limited Traffic to New Version
-        ↓
-Run AnalysisTemplate Checks
-        ↓
-+----------------------------+
-↓                            ↓
-Metrics Healthy              Metrics Failed
-↓                            ↓
-Promote New Version          Roll Back to Stable Version
-↓                            ↓
-Send Slack Notification      Send Slack Notification
-```
 
 ![canary_deploy](./docs/assets/canary_deploy.gif)
 
@@ -182,12 +160,12 @@ Monitoring dashboards and incident alerts help identify abnormal behavior and su
 
 ## Summary
 
-| Phase        | Solution                      | Risk Reduced                   | Description                                       |
-| ------------ | ----------------------------- | ------------------------------ | ------------------------------------------------- |
-| Pre-release  | Separate repos                | Coordination risk across roles | Separates responsibilities with clearer ownership |
-| Pre-release  | Environment isolation         | Production-readiness risk      | Isolates `dev`,`stage`,`prod` environments        |
-| Pre-release  | CI/CD across repos & env      | Bug/security risk              | Catches issues before promotion                   |
-| Release      | Canary deployment             | Rollout risk                   | Limits blast radius of failed releases            |
-| Release      | Automated analysis / rollback | Manual response risk           | Stops unhealthy rollout faster                    |
-| Post-release | Prometheus/Grafana monitoring | Visibility risk                | Shows system health after deployment              |
-| Post-release | Alertmanager alerts           | Operation risk                 | Helps identify incidents sooner and reduce MTTR   |
+| Phase        | Risk                           | Mitigation                    | Description                                       |
+| ------------ | ------------------------------ | ----------------------------- | ------------------------------------------------- |
+| Pre-release  | Coordination risk across roles | Multi-repos                   | Separates responsibilities with clearer ownership |
+| Pre-release  | Production-readiness risk      | Environment isolation         | Isolates `dev`,`stage`,`prod` environments        |
+| Pre-release  | Bug/security risk              | CI/CD across repos & env      | Catches issues before promotion                   |
+| Release      | Rollout risk                   | Canary deployment             | Limits blast radius of failed releases            |
+| Release      | Manual response risk           | Automated analysis / rollback | Stops unhealthy rollout faster                    |
+| Post-release | Visibility risk                | Prometheus/Grafana monitoring | Shows system health after deployment              |
+| Post-release | Operation risk                 | Alertmanager alerts           | Helps identify incidents sooner and reduce MTTR   |
