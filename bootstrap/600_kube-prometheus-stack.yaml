@@ -26,6 +26,24 @@ spec:
         crds:
           enabled: true
 
+        # EKS hides the control plane on AWS-managed nodes that we can't scrape,
+        # so disable the chart's control-plane components and their rules.
+        kubeControllerManager:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeProxy:
+          enabled: false
+
+        defaultRules:
+          rules:
+            kubeControllerManager: false
+            kubeScheduler: false
+            kubeProxyAvailability: false
+            etcd: false
+
         prometheus:
           prometheusSpec:
             replicas: 1
