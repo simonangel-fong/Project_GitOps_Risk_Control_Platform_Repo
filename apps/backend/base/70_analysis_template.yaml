@@ -5,8 +5,6 @@ metadata:
 spec:
   args:
     - name: canary-hash
-      valueFrom:
-        podTemplateHashValue: Latest
   metrics:
     - name: pod-restart-count
       interval: 60s

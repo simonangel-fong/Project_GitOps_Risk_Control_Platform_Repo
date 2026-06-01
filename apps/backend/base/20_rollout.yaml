@@ -22,6 +22,10 @@ spec:
         templates:
           - templateName: backend-memory-health
         startingStep: 1
+        args:
+          - name: canary-hash
+            valueFrom:
+              podTemplateHashValue: Latest
       steps:
         - setWeight: 25
         - pause: { duration: 60s }
