@@ -9,7 +9,6 @@ metadata:
     notifications.argoproj.io/subscribe.on-analysis-run-failed.slack: "deployments,platform-alerts"
     notifications.argoproj.io/subscribe.on-analysis-run-error.slack: "platform-alerts"
 spec:
-  # replicas is intentionally omitted — the HPA owns it.
   selector:
     matchLabels:
       app.kubernetes.io/name: gitops-backend
