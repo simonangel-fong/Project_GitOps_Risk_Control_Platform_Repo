@@ -115,7 +115,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ### Canary Demo: Happy Path Promotion
 
-A new version passes rollout analysis, traffic is gradually promoted, and `Slack` receives the deployment result.
+A new version passes rollout analysis, traffic is gradually promoted.
 
 ![canary_happy_path](docs/assets/canary_happy_path.gif)
 
@@ -123,7 +123,7 @@ A new version passes rollout analysis, traffic is gradually promoted, and `Slack
 
 ### Canary Demo: Failure Rollback
 
-A bad release fails health or metric validation, `Argo Rollouts` rolls back to the stable version, and `Slack` receives the rollback notification.
+A bad release fails health or metric validation, `Argo Rollouts` rolls back to the stable version automatically.
 
 ![canary_failure_rollback](docs/assets/canary_failure_rollback.gif)
 
@@ -134,27 +134,40 @@ A bad release fails health or metric validation, `Argo Rollouts` rolls back to t
 `Post-release risk control` focuses on detecting production issues quickly after deployment.
 Monitoring dashboards and incident alerts help identify abnormal behavior and support faster recovery.
 
-- `Grafana dashboards`: **visualize** application and cluster health after deployment
+- `Grafana dashboards`: **visualize** per-namespace pod health (Running, Pending, OOMKilled, restarts) for `backend` and `frontend`.
+- `Alertmanager`: **notify** the team in Slack `#platform-alerts` when `PrometheusRule`s like `AppPodOOMKilled` fire.
 
-  ![dashboard](./docs/assets/grafana_dashboard.png)
-
-- `Alertmanager`: **notify** operators when abnormal conditions occur
-
-  ![slack-alert](./docs/assets/slack_alert_post_deploy.png)
+Dashboards, alert rules, and the Slack receiver are GitOps-managed under `platform/monitoring-config/` and sync via Argo CD.
 
 ---
 
 ### OOM Incident Simulation
 
-- Demo triggers a controlled post-release memory issue to demonstrate alerting, dashboard visibility, log investigation, and recovery behavior.
+Walk through how a subtle OOM incident that escapes canary is handled post-release.
 
-![oom-demo-alert](./docs/assets/oom_demo_alert.png)
+**1. Detect**
 
-![oom-demo-dashboard](./docs/assets/oom_demo_dashboard.png)
+- Slack alert fires from Alertmanager (`AppPodOOMKilled`).
 
-![oom-demo-log](./docs/assets/oom_demo_log.png)
+![oom_demo_slack_alert](./docs/assets/oom_demo_slack_alert.png)
 
-![oom-demo-rollback](./docs/assets/oom_demo_rollback.png)
+**2. Triage**
+
+- Grafana dashboard confirms scope: OOMKilled pods climbing, restart count growing in `backend`.
+
+![oom_demo_grafana_dashboard](./docs/assets/oom_demo_grafana_dashboard.png)
+
+**3. Investigate**
+
+- Inspect a failing pod to confirm the failure condition.
+
+![oom_demo_describe](./docs/assets/oom_demo_describe.png)
+
+**4. Recover**
+
+- Revert the bad change in Git. Argo CD detects it and re-syncs the previous version.
+
+![oom_demo_rollback](./docs/assets/oom_demo_rollback.png)
 
 ---
 
