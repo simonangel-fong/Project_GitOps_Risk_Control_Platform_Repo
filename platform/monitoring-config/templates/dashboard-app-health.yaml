@@ -31,7 +31,7 @@ data:
           "type": "stat",
           "title": "Running pods",
           "id": 101,
-          "gridPos": { "x": 0, "y": 1, "w": 6, "h": 6 },
+          "gridPos": { "x": 0, "y": 1, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -52,7 +52,7 @@ data:
           "type": "stat",
           "title": "Pending pods",
           "id": 102,
-          "gridPos": { "x": 6, "y": 1, "w": 6, "h": 6 },
+          "gridPos": { "x": 8, "y": 1, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -73,7 +73,7 @@ data:
           "type": "stat",
           "title": "OOMKilled pods",
           "id": 103,
-          "gridPos": { "x": 12, "y": 1, "w": 6, "h": 6 },
+          "gridPos": { "x": 16, "y": 1, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -92,22 +92,22 @@ data:
         },
         {
           "type": "timeseries",
-          "title": "Container restarts (total)",
+          "title": "Pod restarts over time",
           "id": 104,
-          "gridPos": { "x": 18, "y": 1, "w": 6, "h": 6 },
+          "gridPos": { "x": 0, "y": 7, "w": 24, "h": 8 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "fieldConfig": {
             "defaults": {
-              "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 20 },
+              "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 15 },
               "unit": "short",
               "min": 0
             },
             "overrides": []
           },
-          "options": { "legend": { "displayMode": "hidden" } },
+          "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] } },
           "targets": [{
-            "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"backend\"})",
-            "legendFormat": "restarts",
+            "expr": "sum by (pod) (kube_pod_container_status_restarts_total{namespace=\"backend\"})",
+            "legendFormat": "{{`{{pod}}`}}",
             "refId": "A"
           }]
         },
@@ -116,7 +116,7 @@ data:
           "type": "row",
           "title": "Frontend",
           "id": 200,
-          "gridPos": { "x": 0, "y": 7, "w": 24, "h": 1 },
+          "gridPos": { "x": 0, "y": 15, "w": 24, "h": 1 },
           "collapsed": false,
           "panels": []
         },
@@ -124,7 +124,7 @@ data:
           "type": "stat",
           "title": "Running pods",
           "id": 201,
-          "gridPos": { "x": 0, "y": 8, "w": 6, "h": 6 },
+          "gridPos": { "x": 0, "y": 16, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -145,7 +145,7 @@ data:
           "type": "stat",
           "title": "Pending pods",
           "id": 202,
-          "gridPos": { "x": 6, "y": 8, "w": 6, "h": 6 },
+          "gridPos": { "x": 8, "y": 16, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -166,7 +166,7 @@ data:
           "type": "stat",
           "title": "OOMKilled pods",
           "id": 203,
-          "gridPos": { "x": 12, "y": 8, "w": 6, "h": 6 },
+          "gridPos": { "x": 16, "y": 16, "w": 8, "h": 6 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "value" },
           "fieldConfig": {
@@ -185,22 +185,22 @@ data:
         },
         {
           "type": "timeseries",
-          "title": "Container restarts (total)",
+          "title": "Pod restarts over time",
           "id": 204,
-          "gridPos": { "x": 18, "y": 8, "w": 6, "h": 6 },
+          "gridPos": { "x": 0, "y": 22, "w": 24, "h": 8 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "fieldConfig": {
             "defaults": {
-              "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 20 },
+              "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 15 },
               "unit": "short",
               "min": 0
             },
             "overrides": []
           },
-          "options": { "legend": { "displayMode": "hidden" } },
+          "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] } },
           "targets": [{
-            "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"frontend\"})",
-            "legendFormat": "restarts",
+            "expr": "sum by (pod) (kube_pod_container_status_restarts_total{namespace=\"frontend\"})",
+            "legendFormat": "{{`{{pod}}`}}",
             "refId": "A"
           }]
         }
