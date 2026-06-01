@@ -5,8 +5,8 @@
 > A production-style GitOps project that reduces release risk across the delivery lifecycle.
 > It validates changes through `multi-repo` and `multi-environment promotion`, releases gradually with `canary deployment`, and detects post-release issues through **monitoring** and **alerting**.
 
-![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white&style=plastic) ![Argo CD](https://img.shields.io/badge/Argo%20CD-EF7B4D?style=for-the-badge&logo=argo&logoColor=white&style=plastic) ![Argo Rollouts](https://img.shields.io/badge/Argo%20Rollouts-EF7B4D?style=for-the-badge&logo=argo&logoColor=white&style=plastic) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white&style=plastic) ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white&style=plastic) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white&style=plastic) ![Alertmanager](https://img.shields.io/badge/Alertmanager-E6522C?style=for-the-badge&logo=prometheus&logoColor=white&style=plastic) ![Slack](https://custom-icon-badges.demolab.com/badge/Slack-4A154B?logo=slack&logoColor=fff) <br>
-![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonwebservices&logoColor=white&style=plastic) ![Amazon EKS](https://img.shields.io/badge/Amazon%20EKS-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white&style=plastic) ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white&style=plastic) ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white&style=plastic) ![Kustomize](https://img.shields.io/badge/Kustomize-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white&style=plastic) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white&style=plastic) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff&style=plastic) ![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB&style=plastic) <br>
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Argo CD](https://img.shields.io/badge/Argo%20CD-EF7B4D?style=for-the-badge&logo=argo&logoColor=white) ![Argo Rollouts](https://img.shields.io/badge/Argo%20Rollouts-EF7B4D?style=for-the-badge&logo=argo&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white) ![Alertmanager](https://img.shields.io/badge/Alertmanager-E6522C?style=for-the-badge&logo=prometheus&logoColor=white) ![Slack](https://custom-icon-badges.demolab.com/badge/Slack-4A154B?logo=slack&logoColor=fff) <br>
+![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonwebservices&logoColor=white) ![Amazon EKS](https://img.shields.io/badge/Amazon%20EKS-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white) ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white) ![Kustomize](https://img.shields.io/badge/Kustomize-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff) ![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB) <br>
 
 - [GitOps Risk Control](#gitops-risk-control)
   - [Challenge and Solution](#challenge-and-solution)
@@ -103,8 +103,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 ## Release Risk Control
 
-- `Release risk control` focuses on limiting production impact when a new version reaches users.
-- Instead of replacing the stable version all at once, the project uses `canary deployment`, automated rollout analysis, and GitOps-based recovery to release changes gradually and safely:
+- `Release risk control` focuses on limiting production impact when a new version reaches users. Instead of replacing the stable version all at once, the project releases changes gradually and safely through:
   - **Canary Deployment**: shifts a small portion of production traffic to the new version before full rollout.
   - **Automated Rollout Analysis**: evaluates rollout health before increasing traffic.
   - **Rollback/Revert Strategy**: stops unsafe releases and restores the stable version through GitOps-based recovery.
@@ -117,7 +116,7 @@ This project implements a **GitOps-based release risk control workflow** across 
 
 A new version passes rollout analysis, traffic is gradually promoted.
 
-![canary_happy_path](docs/assets/canary_happy_path.gif)
+![canary_happy_path](./docs/assets/canary_happy_path.gif)
 
 ---
 
@@ -125,14 +124,14 @@ A new version passes rollout analysis, traffic is gradually promoted.
 
 A bad release fails health or metric validation, `Argo Rollouts` rolls back to the stable version automatically.
 
-![canary_failure_rollback](docs/assets/canary_failure_rollback.gif)
+![canary_failure_rollback](./docs/assets/canary_failure_rollback.gif)
 
 ---
 
 ## Post-release Risk Control
 
 `Post-release risk control` focuses on detecting production issues quickly after deployment.
-Monitoring dashboards and incident alerts help identify abnormal behavior and support faster recovery.
+Monitoring dashboards and incident alerts help identify abnormal behavior and reduce MTTR.
 
 - `Grafana dashboards`: **visualize** per-namespace pod health (Running, Pending, OOMKilled, restarts) for `backend` and `frontend`.
 - `Alertmanager`: **notify** the team in Slack `#platform-alerts` when `PrometheusRule`s like `AppPodOOMKilled` fire.
@@ -161,13 +160,19 @@ Walk through how a subtle OOM incident that escapes canary is handled post-relea
 
 - Inspect a failing pod to confirm the failure condition.
 
-![oom_demo_describe](./docs/assets/oom_demo_describe.png)
+  ![oom_demo_describe](./docs/assets/oom_demo_describe.png)
 
 **4. Recover**
 
-- Revert the bad change in Git. Argo CD detects it and re-syncs the previous version.
+- Revert the bad commit; Argo CD auto-syncs the previous version.
 
-![oom_demo_rollback](./docs/assets/oom_demo_rollback.gif)
+  ![oom_demo_rollback_unhealthy](./docs/assets/oom_demo_rollback_unhealthy.png)
+
+  > Unhealthy application in production
+
+  ![oom_demo_rollback_healthy](./docs/assets/oom_demo_rollback_healthy.png)
+
+  > Healthy version restored after revert.
 
 ---
 
@@ -176,7 +181,7 @@ Walk through how a subtle OOM incident that escapes canary is handled post-relea
 | Phase        | Risk                           | Mitigation                    | Description                                       |
 | ------------ | ------------------------------ | ----------------------------- | ------------------------------------------------- |
 | Pre-release  | Coordination risk across roles | Multi-repos                   | Separates responsibilities with clearer ownership |
-| Pre-release  | Production-readiness risk      | Environment isolation         | Isolates `dev`,`stage`,`prod` environments        |
+| Pre-release  | Production-readiness risk      | Environment isolation         | Isolates `dev`, `stage`, `prod` environments      |
 | Pre-release  | Bug/security risk              | CI/CD across repos & env      | Catches issues before promotion                   |
 | Release      | Rollout risk                   | Canary deployment             | Limits blast radius of failed releases            |
 | Release      | Manual response risk           | Automated analysis / rollback | Stops unhealthy rollout faster                    |
