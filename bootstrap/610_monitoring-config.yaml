@@ -1,0 +1,48 @@
+# bootstrap/610_monitoring-config.yaml
+# Wave 610 — applies the Grafana dashboard ConfigMap and PrometheusRule
+# for backend/frontend app-health monitoring.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: monitoring-config
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
+  generators:
+    - clusters: {}
+  template:
+    metadata:
+      name: platform-610-monitoring-config
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        type: platform
+      annotations:
+        argocd.argoproj.io/sync-wave: "610"
+    spec:
+      project: gitops
+      source:
+        repoURL: https://github.com/simonangel-fong/Project_GitOps_Platform_Repo.git
+        targetRevision: '{{ index .metadata.annotations "env" }}'
+        path: platform/monitoring-config
+        helm:
+          releaseName: monitoring-config
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+      syncPolicy:
+        automated:
+          prune: true
+          # selfHeal: true
+        retry:
+          limit: 5
+          backoff:
+            duration: 10s
+            maxDuration: 3m
+            factor: 2
+        syncOptions:
+          - ServerSideApply=true

@@ -1,0 +1,7 @@
+namespaces:
+  - backend
+  - frontend
+
+alert:
+  for: 1m
+  severity: critical

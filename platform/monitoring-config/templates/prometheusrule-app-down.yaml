@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: app-down
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/part-of: kube-prometheus-stack
+spec:
+  groups:
+    - name: app-availability
+      rules:
+        - alert: AppDeploymentDown
+          expr: |
+            kube_deployment_status_replicas_available{namespace=~"{{ join "|" .Values.namespaces }}"} == 0
+          for: {{ .Values.alert.for }}
+          labels:
+            severity: {{ .Values.alert.severity }}
+          annotations:
+            summary: "Deployment {{`{{ $labels.deployment }}`}} in {{`{{ $labels.namespace }}`}} has 0 available replicas"
+            description: "No available replicas for deployment {{`{{ $labels.deployment }}`}} in namespace {{`{{ $labels.namespace }}`}} for more than {{ .Values.alert.for }}."
+
+        - alert: AppPodCrashLooping
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace=~"{{ join "|" .Values.namespaces }}"}[5m]) > 3
+          for: {{ .Values.alert.for }}
+          labels:
+            severity: {{ .Values.alert.severity }}
+          annotations:
+            summary: "Pod {{`{{ $labels.pod }}`}} in {{`{{ $labels.namespace }}`}} is crash looping"
+            description: "Container in pod {{`{{ $labels.pod }}`}} restarted more than 3 times in the last 5 minutes."
