@@ -9,15 +9,17 @@ spec:
   groups:
     - name: app-availability
       rules:
-        - alert: AppDeploymentDown
+        - alert: AppNamespaceDown
           expr: |
-            kube_deployment_status_replicas_available{namespace=~"{{ join "|" .Values.namespaces }}"} == 0
+            sum by (namespace) (
+              kube_pod_status_ready{namespace=~"{{ join "|" .Values.namespaces }}",condition="true"}
+            ) == 0
           for: {{ .Values.alert.for }}
           labels:
             severity: {{ .Values.alert.severity }}
           annotations:
-            summary: "Deployment {{`{{ $labels.deployment }}`}} in {{`{{ $labels.namespace }}`}} has 0 available replicas"
-            description: "No available replicas for deployment {{`{{ $labels.deployment }}`}} in namespace {{`{{ $labels.namespace }}`}} for more than {{ .Values.alert.for }}."
+            summary: "No ready pods in namespace {{`{{ $labels.namespace }}`}}"
+            description: "Namespace {{`{{ $labels.namespace }}`}} has zero ready pods for more than {{ .Values.alert.for }}. The application is effectively down."
 
         - alert: AppPodCrashLooping
           expr: |
