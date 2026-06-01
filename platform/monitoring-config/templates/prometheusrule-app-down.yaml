@@ -9,24 +9,31 @@ spec:
   groups:
     - name: app-availability
       rules:
-        - alert: AppNamespaceDown
+        - alert: AppPodOOMKilled
           expr: |
-            sum by (namespace) (
-              kube_pod_status_ready{namespace=~"{{ join "|" .Values.namespaces }}",condition="true"}
-            ) == 0
-          for: {{ .Values.alert.for }}
+            sum by (namespace, pod) (
+              kube_pod_container_status_last_terminated_reason{
+                namespace=~"{{ join "|" .Values.namespaces }}",
+                reason="OOMKilled"
+              }
+            ) > 0
+          for: 30s
           labels:
             severity: {{ .Values.alert.severity }}
           annotations:
-            summary: "No ready pods in namespace {{`{{ $labels.namespace }}`}}"
-            description: "Namespace {{`{{ $labels.namespace }}`}} has zero ready pods for more than {{ .Values.alert.for }}. The application is effectively down."
+            summary: "Pod {{`{{ $labels.pod }}`}} in {{`{{ $labels.namespace }}`}} was OOMKilled"
+            description: "A container in pod {{`{{ $labels.pod }}`}} (namespace {{`{{ $labels.namespace }}`}}) was last terminated by OOMKill. The application may be hitting its memory limit."
 
-        - alert: AppPodCrashLooping
+        - alert: AppNamespaceDegraded
           expr: |
-            increase(kube_pod_container_status_restarts_total{namespace=~"{{ join "|" .Values.namespaces }}"}[5m]) > 3
+            (
+              sum by (namespace) (kube_pod_status_ready{namespace=~"{{ join "|" .Values.namespaces }}",condition="true"})
+              /
+              sum by (namespace) (kube_pod_status_phase{namespace=~"{{ join "|" .Values.namespaces }}",phase!="Succeeded"})
+            ) < 0.5
           for: {{ .Values.alert.for }}
           labels:
             severity: {{ .Values.alert.severity }}
           annotations:
-            summary: "Pod {{`{{ $labels.pod }}`}} in {{`{{ $labels.namespace }}`}} is crash looping"
-            description: "Container in pod {{`{{ $labels.pod }}`}} restarted more than 3 times in the last 5 minutes."
+            summary: "Less than 50% of pods ready in namespace {{`{{ $labels.namespace }}`}}"
+            description: "Namespace {{`{{ $labels.namespace }}`}} has fewer than half its pods in Ready state for more than {{ .Values.alert.for }}. The application is degraded."
