@@ -167,7 +167,7 @@ Walk through how a subtle OOM incident that escapes canary is handled post-relea
 
 - Revert the bad change in Git. Argo CD detects it and re-syncs the previous version.
 
-![oom_demo_rollback](./docs/assets/oom_demo_rollback.png)
+![oom_demo_rollback](./docs/assets/oom_demo_rollback.gif)
 
 ---
 
