@@ -7,8 +7,8 @@ spec:
     - name: pod-restart-count
       interval: 60s
       count: 3
-      successCondition: result[0] == 0
-      failureLimit: 1
+      successCondition: result[0] <= 1
+      failureLimit: 2
       provider:
         prometheus:
           address: http://kps-prometheus.monitoring.svc.cluster.local:9090

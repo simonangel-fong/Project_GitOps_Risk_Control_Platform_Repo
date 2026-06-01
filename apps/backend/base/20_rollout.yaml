@@ -17,6 +17,11 @@ spec:
   progressDeadlineAbort: true
   strategy:
     canary:
+      # enable analysis
+      analysis:
+        templates:
+          - templateName: backend-memory-health
+        startingStep: 1
       steps:
         - setWeight: 25
         - pause: { duration: 60s }
