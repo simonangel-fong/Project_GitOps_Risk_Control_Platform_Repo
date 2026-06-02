@@ -1,5 +1,6 @@
 # data.tf
-# data "aws_acm_certificate" "cloudfront_cert" {
-#   domain   = "*.arguswatcher.net"
-#   provider = aws.acm
-# }
+
+# AWS-managed CloudFront cache policy "CachingOptimized"
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}

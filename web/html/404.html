@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>404 — Page Not Found | GitOps Risk Control</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --ink: #0f1729;
+            --text: #1f2937;
+            --text-dim: #4b5563;
+            --text-muted: #6b7280;
+            --navy: #0f2942;
+            --navy-2: #1e3a5f;
+            --rule: #d8dde4;
+            --serif: 'Source Serif 4', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+            --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.65;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .wrap {
+            max-width: 560px;
+            text-align: center;
+        }
+
+        .code {
+            font-family: var(--serif);
+            font-size: 5rem;
+            font-weight: 600;
+            color: var(--navy);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin: 0 0 0.5rem;
+        }
+
+        h1 {
+            font-family: var(--serif);
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 1.75rem;
+            margin: 0 0 1rem;
+        }
+
+        p {
+            color: var(--text-dim);
+            margin: 0 0 1.5rem;
+        }
+
+        .countdown {
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 1.5rem 0;
+        }
+
+        #seconds {
+            font-weight: 600;
+            color: var(--navy-2);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.25rem;
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            border: 1px solid var(--rule);
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+            cursor: pointer;
+            background: var(--bg);
+            color: var(--navy-2);
+        }
+
+        .btn:hover {
+            border-color: var(--navy-2);
+            color: var(--navy);
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: #fff;
+            border-color: var(--navy);
+        }
+
+        .btn-primary:hover {
+            background: var(--navy-2);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="wrap">
+        <p class="code">404</p>
+        <h1>Page not found</h1>
+        <p>The page you were looking for doesn't exist or has been moved.</p>
+
+        <p class="countdown">
+            Redirecting to the home page in <span id="seconds">10</span> seconds&hellip;
+        </p>
+
+        <div class="actions">
+            <a href="/" class="btn btn-primary">Go home now</a>
+            <button type="button" class="btn" id="cancel">Cancel redirect</button>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            var seconds = 10;
+            var el = document.getElementById('seconds');
+            var cancelBtn = document.getElementById('cancel');
+            var cancelled = false;
+
+            var timer = setInterval(function () {
+                seconds -= 1;
+                if (cancelled) return;
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    window.location.replace('/');
+                    return;
+                }
+                el.textContent = seconds;
+            }, 1000);
+
+            cancelBtn.addEventListener('click', function () {
+                cancelled = true;
+                clearInterval(timer);
+                cancelBtn.parentNode.parentNode.querySelector('.countdown').textContent = 'Redirect cancelled.';
+            });
+        })();
+    </script>
+</body>
+
+</html>

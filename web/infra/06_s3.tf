@@ -8,14 +8,14 @@ resource "random_id" "bucket_suffix" {
 # ########################################
 # AWS S3 bucket for static web host
 # ########################################
-resource "aws_s3_bucket" "web_host_bucket" {
+resource "aws_s3_bucket" "web_host" {
   bucket        = "${local.project}-${local.env}-${random_id.bucket_suffix.hex}"
-  force_destroy = true
+  force_destroy = true # demo only — remove for production
 }
 
 # Server-side encryption (SSE-S3 / AES256)
-resource "aws_s3_bucket_server_side_encryption_configuration" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "web_host" {
+  bucket = aws_s3_bucket.web_host.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -25,8 +25,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "web_host_bucket" 
 }
 
 # Enable bucket versioning
-resource "aws_s3_bucket_versioning" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
+resource "aws_s3_bucket_versioning" "web_host" {
+  bucket = aws_s3_bucket.web_host.id
 
   versioning_configuration {
     status = "Enabled"
@@ -34,8 +34,8 @@ resource "aws_s3_bucket_versioning" "web_host_bucket" {
 }
 
 # Expire noncurrent versions so they don't accumulate forever
-resource "aws_s3_bucket_lifecycle_configuration" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
+resource "aws_s3_bucket_lifecycle_configuration" "web_host" {
+  bucket = aws_s3_bucket.web_host.id
 
   rule {
     id     = "expire-noncurrent-versions"
@@ -54,53 +54,40 @@ resource "aws_s3_bucket_lifecycle_configuration" "web_host_bucket" {
 }
 
 # ########################################
-# Static website hosting configuration
+# Bucket access — fully private, served via CloudFront + OAC
 # ########################################
-resource "aws_s3_bucket_website_configuration" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
-# ########################################
-# Public access (S3 website-endpoint hosting)
-#
-# NOTE: This is acceptable for a demo. Once CloudFront + OAC is
-# enabled in 07_cloudfront.tf, flip all four block_public_* to true
-# and replace the bucket policy below with an OAC-scoped policy.
-# ########################################
-resource "aws_s3_bucket_public_access_block" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
+resource "aws_s3_bucket_public_access_block" "web_host" {
+  bucket = aws_s3_bucket.web_host.id
 
   block_public_acls       = true
   ignore_public_acls      = true
-  block_public_policy     = false
-  restrict_public_buckets = false
+  block_public_policy     = true
+  restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_policy" "web_host_bucket" {
-  bucket = aws_s3_bucket.web_host_bucket.id
+# Allow only this CloudFront distribution to read objects (via OAC)
+resource "aws_s3_bucket_policy" "web_host" {
+  bucket = aws_s3_bucket.web_host.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "PublicReadGetObject"
+        Sid       = "AllowCloudFrontServicePrincipalReadOnly"
         Effect    = "Allow"
-        Principal = "*"
+        Principal = { Service = "cloudfront.amazonaws.com" }
         Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.web_host_bucket.arn}/*"
+        Resource  = "${aws_s3_bucket.web_host.arn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.web_host.arn
+          }
+        }
       }
     ]
   })
 
-  depends_on = [aws_s3_bucket_public_access_block.web_host_bucket]
+  depends_on = [aws_s3_bucket_public_access_block.web_host]
 }
 
 # ########################################
@@ -115,7 +102,7 @@ module "template_files" {
 resource "aws_s3_object" "web_file" {
   for_each = module.template_files.files
 
-  bucket       = aws_s3_bucket.web_host_bucket.id
+  bucket       = aws_s3_bucket.web_host.id
   key          = each.key
   content_type = each.value.content_type
 
