@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="GitOps Risk Control — A case study on reducing release risk and protecting business continuity across the software delivery lifecycle.">
+    <title>GitOps Risk Control — Validate Early. Release Gradually. Detect Fast.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="nav">
+        <div class="nav-inner container">
+            <a href="#top" class="nav-brand">GitOps Risk Control</a>
+            <button class="nav-toggle" id="navToggle" aria-label="toggle menu">≡</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#challenge">Challenge</a></li>
+                <li><a href="#pre-release">Pre-release</a></li>
+                <li><a href="#release">Release</a></li>
+                <li><a href="#post-release">Post-release</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="top">
+
+        <!-- HERO -->
+        <header class="hero">
+            <div class="container">
+                <div class="eyebrow">Validate Early · Release Gradually · Detect Fast</div>
+                <h1>GitOps Risk Control: Protecting the business through safer software releases.</h1>
+                <p class="lede">
+                    Every production release is a moment of risk — for customers, for operations, and for the bottom
+                    line.
+                    This GitOps project shows how a structured delivery process reduces that risk by validating
+                    changes early, releasing them gradually, and detecting issues fast.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#challenge" class="btn btn-primary">Project Video</a>
+                    <a href="https://github.com/simonangel-fong/Project_GitOps_Risk_Control_Platform_Repo.git"
+                        target="_blank" rel="noopener" class="btn">View source</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- CHALLENGE -->
+        <section id="challenge">
+            <div class="container">
+                <div class="eyebrow">The challenge</div>
+                <h2 class="section-title">When a release goes wrong, the business pays.</h2>
+                <p class="lede-sm">
+                    A failed release isn't just a technical event. It interrupts customers, distracts the team,
+                    and erodes trust in the delivery process. The question for the business is not
+                    <em>whether</em> to release, but how to release in a way that limits the consequences when
+                    something does go wrong.
+                </p>
+
+                <div class="pull-quote">
+                    How can changes be <em>validated early</em>, <em>released gradually</em>, and
+                    <em>monitored continuously</em> to reduce the impact on customers and operations?
+                </div>
+
+                <h3 class="sub-title">A three-phase approach</h3>
+                <p>
+                    Risk shows up at three different points in the release lifecycle. Each one calls for
+                    a different control.
+                </p>
+
+                <div class="phases">
+                    <div class="phase">
+                        <div class="phase-label">Phase 01 — Before release</div>
+                        <h3>Validate early</h3>
+                        <p>
+                            Separate ownership across teams, and rehearse every change in isolated
+                            environments before it gets near production.
+                        </p>
+                        <div class="phase-goal">Outcome: issues caught before customers see them.</div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-label">Phase 02 — During release</div>
+                        <h3>Release gradually</h3>
+                        <p>
+                            Roll out new versions to a small slice of traffic first, with automatic
+                            rollback if the rollout shows signs of failure.
+                        </p>
+                        <div class="phase-goal">Outcome: small blast radius when something breaks.</div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-label">Phase 03 — After release</div>
+                        <h3>Detect fast</h3>
+                        <p>
+                            Watch the live system continuously and notify the team the moment something
+                            unusual happens.
+                        </p>
+                        <div class="phase-goal">Outcome: faster recovery, lower business impact.</div>
+                    </div>
+                </div>
+
+                <figure class="figure">
+                    <img src="img/architecture.gif" alt="End-to-end delivery architecture">
+                    <figcaption>Figure 1 — End-to-end view of the delivery process, from code change to production
+                        monitoring.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- PRE-RELEASE -->
+        <section id="pre-release" class="alt">
+            <div class="container">
+                <div class="eyebrow">Phase 01 · Before release</div>
+                <h2 class="section-title">Catching issues before they reach customers.</h2>
+                <p class="lede-sm">
+                    Most production incidents have roots earlier in the process — in unclear ownership,
+                    rushed changes, or environments that don't reflect reality. The pre-release phase
+                    addresses each of these directly.
+                </p>
+
+                <h3 class="sub-title">Clear ownership through dedicated repositories</h3>
+                <p>
+                    Splitting the work across three repositories establishes clear ownership boundaries
+                    between teams. Each team works in its own space, reviews its own changes, and is
+                    accountable for its own quality — which reduces coordination friction and makes the
+                    audit trail unambiguous.
+                </p>
+
+                <figure class="figure">
+                    <img src="img/multi-repo.png"
+                        alt="Three-repository structure showing application, infrastructure, and platform separation">
+                    <figcaption>Figure 2 — Ownership is split across three repositories, one per team.</figcaption>
+                </figure>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Repository</th>
+                                <th>Owner</th>
+                                <th>Responsibility</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="https://github.com/simonangel-fong/Project_GitOps_Risk_Control_Platform_Repo.git"
+                                        target="_blank" rel="noopener">Platform</a></td>
+                                <td>Platform engineering</td>
+                                <td>Cluster add-ons, deployment configuration, rollout policy, monitoring, and
+                                    notifications</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://github.com/simonangel-fong/Project_GitOps_Risk_Control_App_Repo.git"
+                                        target="_blank" rel="noopener">Application</a></td>
+                                <td>Software engineering</td>
+                                <td>Application source code, builds, and deployment triggers</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://github.com/simonangel-fong/Project_GitOps_Risk_Control_Infra_Repo.git"
+                                        target="_blank" rel="noopener">Infrastructure</a></td>
+                                <td>Cloud engineering</td>
+                                <td>Cloud infrastructure, clusters, and networking foundation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="sub-title">Three environments, three levels of scrutiny</h3>
+                <p>
+                    Changes pass through three separate environments before reaching customers. Each is
+                    fully isolated — different infrastructure, different configuration, different
+                    purpose — so problems are contained where they occur.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Environment</th>
+                                <th>Purpose</th>
+                                <th>Character</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Development</td>
+                                <td>Early validation as work is in progress</td>
+                                <td>Fast-changing and flexible</td>
+                            </tr>
+                            <tr>
+                                <td>Staging</td>
+                                <td>Production-like rehearsal before release</td>
+                                <td>Test-heavy, mirrors production closely</td>
+                            </tr>
+                            <tr>
+                                <td>Production</td>
+                                <td>The live environment customers use</td>
+                                <td>Stable, reliable, security-focused</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="sub-title">Automated promotion, with a human checkpoint where it matters</h3>
+                <p>
+                    Changes move automatically from development to staging once validated. The final
+                    step into production requires explicit human approval — a deliberate friction
+                    point that keeps a release owner accountable for what goes live.
+                </p>
+
+                <figure class="figure">
+                    <img src="img/cicd_pipeline_diagram.gif"
+                        alt="Promotion pipeline from development to staging to production">
+                    <figcaption>Figure 3 — Automation handles the routine; humans approve the consequential.
+                    </figcaption>
+                </figure>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Environment</th>
+                                <th>Trigger</th>
+                                <th>What happens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Development</td>
+                                <td>Engineer commits a change</td>
+                                <td>Automated validation, security checks, smoke test</td>
+                            </tr>
+                            <tr>
+                                <td>Staging</td>
+                                <td>Automatic, after development passes</td>
+                                <td>Promotion, load test, validation report</td>
+                            </tr>
+                            <tr>
+                                <td>Production</td>
+                                <td>Release owner reviews and approves</td>
+                                <td>Promotion, release notification, hand off to monitoring</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="video-wrap">
+                    <video muted controls preload="metadata">
+                        <source src="./video/pipeline-demo.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-placeholder">
+                        <div class="play">▶</div>
+                        <div>Pipeline walkthrough</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RELEASE -->
+        <section id="release">
+            <div class="container">
+                <div class="eyebrow">Phase 02 · During release</div>
+                <h2 class="section-title">Limiting the risk of a bad release.</h2>
+                <p class="lede-sm">
+                    Even with thorough pre-release work, some issues only appear in production. The
+                    answer is not to release with more caution — it is to release in smaller, safer
+                    increments, so that a problem touches a fraction of users rather than all of them.
+                </p>
+
+                <h3 class="sub-title">Three controls working together</h3>
+                <div class="strategies">
+                    <div class="strategy">
+                        <h4>Gradual traffic shift</h4>
+                        <p>A new version receives a small share of production traffic first. If it behaves correctly,
+                            the share grows.</p>
+                    </div>
+                    <div class="strategy">
+                        <h4>Continuous rollout analysis</h4>
+                        <p>System health is checked at every step. Traffic only grows once the new version proves
+                            itself.</p>
+                    </div>
+                    <div class="strategy">
+                        <h4>Automatic rollback</h4>
+                        <p>If health checks fail, the release is reversed automatically. The stable version is restored
+                            without manual intervention.</p>
+                    </div>
+                </div>
+
+                <figure class="figure">
+                    <img src="img/canary_deploy.gif"
+                        alt="Gradual rollout from small share of traffic to full production">
+                    <figcaption>Figure 4 — Traffic shifts in stages, gated by automated health checks.</figcaption>
+                </figure>
+
+                <h3 class="sub-title">When the release goes well</h3>
+                <p>
+                    A healthy release passes every checkpoint. Traffic moves smoothly from a small
+                    share to full production, with no manual intervention required.
+                </p>
+                <figure class="figure">
+                    <img src="img/canary_happy_path.gif" alt="A successful gradual rollout">
+                    <figcaption>Figure 5 — Successful release, fully promoted.</figcaption>
+                </figure>
+
+                <h3 class="sub-title">When the release goes wrong</h3>
+                <p>
+                    A degraded release fails the automated health checks. The system halts the rollout
+                    and reverts to the previous stable version on its own — limiting customer impact
+                    to a small fraction of traffic, for a short window of time.
+                </p>
+                <figure class="figure">
+                    <img src="img/canary_failure_rollback.gif"
+                        alt="A failed release rolling back automatically">
+                    <figcaption>Figure 6 — Automatic rollback contains the impact of a bad release.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- POST-RELEASE -->
+        <section id="post-release" class="alt">
+            <div class="container">
+                <div class="eyebrow">Phase 03 · After release</div>
+                <h2 class="section-title">Detecting incidents before they become outages.</h2>
+                <p class="lede-sm">
+                    Some problems are subtle enough to slip past every check and only appear once real
+                    customers use the new version. The goal of the post-release phase is to shorten the
+                    window between when something starts going wrong and when the team responds — what
+                    is commonly called Mean Time To Recovery.
+                </p>
+
+                <h3 class="sub-title">Two complementary signals</h3>
+                <div class="strategies">
+                    <div class="strategy">
+                        <h4>Continuous monitoring</h4>
+                        <p>Dashboards visualize the health of the system in real time — what is running, what is
+                            failing, and how often things restart.</p>
+                    </div>
+                    <div class="strategy">
+                        <h4>Targeted alerting</h4>
+                        <p>When a meaningful threshold is crossed, the on-call team is notified directly in their
+                            working channel — no inbox to monitor, no portal to check.</p>
+                    </div>
+                </div>
+
+                <h3 class="sub-title">A worked example: a memory-related incident</h3>
+                <p>
+                    Consider a release that passes every check but contains a subtle memory issue that
+                    only appears under sustained production load. Here is how the post-release process
+                    handles it.
+                </p>
+
+                <ol class="steps">
+                    <li>
+                        <div class="step-head">
+                            <span class="step-num">1</span>
+                            <div>
+                                <h4>Detect</h4>
+                                <p>An alert is raised the moment failing pods cross a defined threshold. The on-call
+                                    engineer is notified in the team channel within seconds.</p>
+                            </div>
+                        </div>
+                        <figure class="figure">
+                            <img src="img/oom_demo_slack_alert.png" alt="Alert in the team chat channel">
+                        </figure>
+                    </li>
+                    <li>
+                        <div class="step-head">
+                            <span class="step-num">2</span>
+                            <div>
+                                <h4>Triage</h4>
+                                <p>The dashboard confirms the scope of the issue — which service is affected, how
+                                    widely, and how quickly the problem is escalating.</p>
+                            </div>
+                        </div>
+                        <figure class="figure">
+                            <img src="img/oom_demo_grafana_dashboard.png"
+                                alt="Monitoring dashboard showing affected service">
+                        </figure>
+                    </li>
+                    <li>
+                        <div class="step-head">
+                            <span class="step-num">3</span>
+                            <div>
+                                <h4>Investigate</h4>
+                                <p>Diagnostic output from the affected component confirms the failure condition. The
+                                    cause is identified quickly because the data is already at hand.</p>
+                            </div>
+                        </div>
+                        <figure class="figure">
+                            <img src="img/oom_demo_describe.png"
+                                alt="Diagnostic detail of the affected component">
+                        </figure>
+                    </li>
+                    <li>
+                        <div class="step-head">
+                            <span class="step-num">4</span>
+                            <div>
+                                <h4>Recover</h4>
+                                <p>Reverting the change in source control is enough — the platform synchronizes
+                                    automatically and the previous, healthy version is restored.</p>
+                            </div>
+                        </div>
+                        <figure class="figure">
+                            <img src="img/oom_demo_rollback_unhealthy.png"
+                                alt="Application in unhealthy state before recovery">
+                            <figcaption>Before recovery — application degraded.</figcaption>
+                        </figure>
+                        <figure class="figure">
+                            <img src="img/oom_demo_rollback_healthy.png"
+                                alt="Application restored to healthy state">
+                            <figcaption>After recovery — healthy version restored.</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+
+                <div class="video-wrap">
+                    <video muted controls preload="metadata">
+                        <source src="./video/oom-demo.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-placeholder">
+                        <div class="play">▶</div>
+                        <div>Incident response walkthrough</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUMMARY -->
+        <section id="summary">
+            <div class="container">
+                <div class="eyebrow">Summary</div>
+                <h2 class="section-title">Each risk has a matching control.</h2>
+                <p class="lede-sm">
+                    The full picture of how risk shows up at each stage of the lifecycle, and how each
+                    is addressed.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Risk</th>
+                                <th>Control</th>
+                                <th>Business outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pre-release</td>
+                                <td>Unclear ownership across teams</td>
+                                <td>Dedicated repositories per team</td>
+                                <td>Clearer responsibility, less coordination friction</td>
+                            </tr>
+                            <tr>
+                                <td>Pre-release</td>
+                                <td>Production-readiness gaps</td>
+                                <td>Isolated development, staging, production</td>
+                                <td>Issues surface before customers see them</td>
+                            </tr>
+                            <tr>
+                                <td>Pre-release</td>
+                                <td>Bugs and security flaws</td>
+                                <td>Automated validation across environments</td>
+                                <td>Defects caught before promotion</td>
+                            </tr>
+                            <tr>
+                                <td>Release</td>
+                                <td>A bad version reaching all users</td>
+                                <td>Gradual rollout to a fraction of traffic</td>
+                                <td>Limited blast radius on failure</td>
+                            </tr>
+                            <tr>
+                                <td>Release</td>
+                                <td>Slow human response to a failing release</td>
+                                <td>Automated rollout analysis and rollback</td>
+                                <td>Bad releases reversed without delay</td>
+                            </tr>
+                            <tr>
+                                <td>Post-release</td>
+                                <td>Limited visibility into production</td>
+                                <td>Continuous monitoring dashboards</td>
+                                <td>System health is observable in real time</td>
+                            </tr>
+                            <tr>
+                                <td>Post-release</td>
+                                <td>Late discovery of incidents</td>
+                                <td>Targeted alerting to the on-call team</td>
+                                <td>Lower Mean Time To Recovery</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <div>© 2026 <a href="https://github.com/simonangel-fong" target="_blank" rel="noopener">simonangel-fong</a>
+            </div>
+            <div><a href="#top">Back to top</a></div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
