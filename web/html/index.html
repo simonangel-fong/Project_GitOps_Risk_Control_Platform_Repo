@@ -7,7 +7,7 @@
     <meta name="description"
         content="GitOps Risk Control — A case study on reducing release risk and protecting business continuity across the software delivery lifecycle.">
     <title>GitOps Risk Control — Validate Early. Release Gradually. Detect Fast.</title>
-
+    <link rel="icon" type="image/x-icon" href="img/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -43,7 +43,8 @@
                 <p class="lede">
                     Every production release is a moment of risk — for customers, for operations, and for the bottom
                     line.
-                    This GitOps project shows how a structured delivery process reduces that risk by validating
+                    This <b><em>GitOps project</em></b> shows how a structured delivery process reduces that risk by
+                    validating
                     changes early, releasing them gradually, and detecting issues fast.
                 </p>
 
@@ -298,7 +299,7 @@
                 <figure class="figure">
                     <img src="img/canary_deploy.gif"
                         alt="Gradual rollout from small share of traffic to full production">
-                    <figcaption>Figure 4 — Traffic shifts in stages, gated by automated health checks.</figcaption>
+                    <figcaption>Figure 4 — Traffic shifts in release, gated by automated health checks.</figcaption>
                 </figure>
 
                 <h3 class="sub-title">When the release goes well</h3>
@@ -318,8 +319,7 @@
                     to a small fraction of traffic, for a short window of time.
                 </p>
                 <figure class="figure">
-                    <img src="img/canary_failure_rollback.gif"
-                        alt="A failed release rolling back automatically">
+                    <img src="img/canary_failure_rollback.gif" alt="A failed release rolling back automatically">
                     <figcaption>Figure 6 — Automatic rollback contains the impact of a bad release.</figcaption>
                 </figure>
             </div>
@@ -396,8 +396,7 @@
                             </div>
                         </div>
                         <figure class="figure">
-                            <img src="img/oom_demo_describe.png"
-                                alt="Diagnostic detail of the affected component">
+                            <img src="img/oom_demo_describe.png" alt="Diagnostic detail of the affected component">
                         </figure>
                     </li>
                     <li>
@@ -415,8 +414,7 @@
                             <figcaption>Before recovery — application degraded.</figcaption>
                         </figure>
                         <figure class="figure">
-                            <img src="img/oom_demo_rollback_healthy.png"
-                                alt="Application restored to healthy state">
+                            <img src="img/oom_demo_rollback_healthy.png" alt="Application restored to healthy state">
                             <figcaption>After recovery — healthy version restored.</figcaption>
                         </figure>
                     </li>
