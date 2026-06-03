@@ -6,7 +6,7 @@ resources:
 images:
   - name: gitops-risk-control-backend
     newName: docker.io/simonangelfong/gitops-risk-control-backend
-    newTag: v0.3.4
+    newTag: v0.3.3
 labels:
   - includeSelectors: false
     pairs:
@@ -22,7 +22,7 @@ patches:
         value: 10
       - op: replace
         path: /spec/maxReplicas
-        value: 10
+        value: 20
       - op: replace
         path: /spec/metrics/0/resource/target/averageUtilization
         value: 60
@@ -38,13 +38,13 @@ patches:
         value: "red"
       - op: replace
         path: /spec/template/spec/containers/0/env/2/value
-        value: "true"
+        value: "false"
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
         value: "jdbc:postgresql://postgres:5432/demo_db"
       - op: replace
         path: /spec/template/spec/containers/0/env/4/value
-        value: "false"
+        value: "true"
       - op: replace
         path: /spec/template/spec/containers/0/env/5/value
         value: "1"
