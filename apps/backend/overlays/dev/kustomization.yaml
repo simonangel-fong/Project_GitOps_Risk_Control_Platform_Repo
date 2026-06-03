@@ -6,7 +6,7 @@ resources:
 images:
   - name: gitops-risk-control-backend
     newName: docker.io/simonangelfong/gitops-risk-control-backend
-    newTag: v0.3.3
+    newTag: v0.3.4
 labels:
   - includeSelectors: false
     pairs:
@@ -38,7 +38,7 @@ patches:
         value: "red"
       - op: replace
         path: /spec/template/spec/containers/0/env/2/value
-        value: "false"
+        value: "true"
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
         value: "jdbc:postgresql://postgres:5432/demo_db"
