@@ -22,7 +22,7 @@ patches:
         value: 10
       - op: replace
         path: /spec/maxReplicas
-        value: 30
+        value: 10
       - op: replace
         path: /spec/metrics/0/resource/target/averageUtilization
         value: 60
