@@ -33,7 +33,6 @@ resource "aws_s3_bucket_versioning" "web_host" {
   }
 }
 
-# Expire noncurrent versions so they don't accumulate forever
 resource "aws_s3_bucket_lifecycle_configuration" "web_host" {
   bucket = aws_s3_bucket.web_host.id
 

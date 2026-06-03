@@ -8,7 +8,6 @@ on:
       - '.github/workflows/40-cd-web.yml'
   workflow_dispatch:
 
-# Serialize: don't let two pushes race to terraform apply on shared state.
 concurrency:
   group: cd-web
   cancel-in-progress: false
