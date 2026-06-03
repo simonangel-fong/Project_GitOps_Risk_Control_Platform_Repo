@@ -58,22 +58,31 @@ spec:
               value: "false"
             - name: OOM_TIME
               value: "1"
+          # start up
+          startupProbe:
+            httpGet:
+              path: /api/healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+          # liveness
           livenessProbe:
             httpGet:
               path: /api/healthz
               port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 5
+            periodSeconds: 10
             timeoutSeconds: 3
-            failureThreshold: 10
+            failureThreshold: 3
+          # readiness
           readinessProbe:
             httpGet:
               path: /api/healthz
               port: 8080
-            initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 3
-            failureThreshold: 10
+            failureThreshold: 3
           resources:
             requests:
               cpu: 100m
