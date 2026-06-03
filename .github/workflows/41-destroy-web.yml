@@ -1,0 +1,115 @@
+name: 41-destroy-web
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "destroy gitops.arguswatcher.net" to confirm'
+        required: true
+        type: string
+
+concurrency:
+  group: cd-web # shares the lock group with 40-cd-web to prevent apply+destroy race
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: confirm-and-branch-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dispatched from main
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Destroy can only be dispatched from 'main' (got: $REF)"
+            exit 1
+          fi
+
+      - name: Verify confirmation phrase
+        env:
+          INPUT_CONFIRM: ${{ inputs.confirm }}
+          EXPECTED: 'destroy gitops.arguswatcher.net'
+        run: |
+          set -euo pipefail
+          if [ "$INPUT_CONFIRM" != "$EXPECTED" ]; then
+            echo "::error::Confirmation phrase did not match. Aborting."
+            exit 1
+          fi
+
+  destroy:
+    name: terraform destroy (web)
+    runs-on: ubuntu-latest
+    needs: [guard]
+    environment:
+      name: web
+      url: https://gitops.arguswatcher.net
+    permissions:
+      contents: read
+      id-token: write # required for AWS OIDC
+    env:
+      AWS_REGION: ca-central-1
+      TF_IN_AUTOMATION: 'true'
+      TF_INPUT: '0'
+      TF_VAR_cloudflare_api_token: ${{ secrets.cloudflare_api_token }}
+      TF_VAR_cloudflare_zone_id: ${{ secrets.cloudflare_zone_id }}
+      TF_VAR_aws_acm_cert_arn: ${{ secrets.aws_acm_cert_arn }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: gh-41-destroy-web-${{ github.run_id }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: 1.15.2
+          terraform_wrapper: false
+
+      - name: terraform init
+        working-directory: web/infra
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ vars.TF_BACKEND_BUCKET }}" \
+            -backend-config="region=${{ vars.TF_BACKEND_REGION }}" \
+            -backend-config="key=${{ vars.TF_BACKEND_KEY }}"
+
+      - name: terraform plan -destroy
+        working-directory: web/infra
+        run: terraform plan -destroy -out=tfplan -lock-timeout=5m
+
+      - name: terraform apply (destroy plan)
+        working-directory: web/infra
+        run: terraform apply -auto-approve -lock-timeout=5m tfplan
+
+  notify-slack:
+    name: notify-slack
+    runs-on: ubuntu-latest
+    needs: [destroy]
+    if: always()
+    permissions: {}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Notify Slack
+        uses: ./.github/actions/notify-slack
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel: ${{ vars.SLACK_CHANNEL }}
+          status: ${{ contains(needs.*.result, 'failure') && 'failure' || contains(needs.*.result, 'cancelled') && 'cancelled' || 'success' }}
+          workflow: ${{ github.workflow }}
+          run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
