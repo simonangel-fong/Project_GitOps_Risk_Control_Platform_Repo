@@ -1,4 +1,4 @@
-name: 21-cd-stage(untest)
+name: 21-cd-stage
 
 on:
   # Fired by Argo Notifications when apps-stage (app-of-apps) reaches Healthy + Synced.

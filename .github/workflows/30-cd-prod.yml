@@ -1,4 +1,4 @@
-name: 30-cd-prod(untest)
+name: 30-cd-prod
 
 on:
   # Fired by Argo Notifications when apps-prod (app-of-apps) reaches Healthy + Synced.
