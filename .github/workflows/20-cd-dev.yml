@@ -1,4 +1,4 @@
-name: 20-cd-dev(untest)
+name: 20-cd-dev
 
 on:
   # Fired by Argo Notifications when apps-dev (app-of-apps) reaches Healthy + Synced.
