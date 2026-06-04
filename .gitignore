@@ -45,3 +45,5 @@ terraform.rc
 
 # Environments
 .env
+
+docs/video/*
